@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pencemaran Alam Sekitar</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #4FC3F7;
+    --sky-light: #E1F5FE;
+    --sky-dark: #0288D1;
+    --green: #66BB6A;
+    --green-light: #E8F5E9;
+    --green-dark: #388E3C;
+    --amber: #FFB74D;
+    --amber-light: #FFF8E1;
+    --amber-dark: #F57C00;
+    --brown: #8D6E63;
+    --red: #EF5350;
+    --red-light: #FFEBEE;
+    --purple: #AB47BC;
+    --purple-light: #F3E5F5;
+    --teal: #26C6DA;
+    --teal-light: #E0F7FA;
+    --navy: #1A237E;
+    --white: #FAFAFA;
+    --text: #263238;
+    --text-light: #546E7A;
+    --card-shadow: 0 8px 32px rgba(26,35,126,0.10);
+    --radius: 20px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #E3F2FD 0%, #E8F5E9 50%, #FFF8E1 100%);
+    min-height: 100vh;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar-wrap {
+    position: fixed; top: 0; left: 0; width: 100%; height: 6px; z-index: 1000;
+    background: rgba(255,255,255,0.4);
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--sky), var(--amber));
+    transition: width 0.5s ease;
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed; top: 6px; left: 0; width: 100%; z-index: 999;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 24px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1.5px solid rgba(79,195,247,0.15);
+  }
+  .nav-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 0.95rem; color: var(--navy);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-title .leaf { font-size: 1.2rem; animation: sway 2.5s ease-in-out infinite; display: inline-block; }
+  @keyframes sway { 0%,100%{transform:rotate(-8deg)} 50%{transform:rotate(8deg)} }
+
+  .nav-dots { display: flex; gap: 8px; }
+  .nav-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #CFD8DC; cursor: pointer;
+    transition: all 0.3s; border: 2px solid transparent;
+  }
+  .nav-dot.active { background: var(--green-dark); border-color: var(--green); transform: scale(1.3); }
+  .nav-dot:hover { background: var(--sky); transform: scale(1.2); }
+
+  .nav-counter {
+    font-family: 'Nunito', sans-serif; font-weight: 700;
+    font-size: 0.85rem; color: var(--text-light);
+  }
+
+  /* ── SLIDES WRAPPER ── */
+  .slides-wrap { padding-top: 70px; }
+
+  /* ── SLIDE BASE ── */
+  .slide {
+    min-height: calc(100vh - 70px);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px 24px 80px;
+    animation: slideIn 0.5s ease;
+  }
+  .slide.active { display: flex; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--green-dark); background: var(--green-light);
+    border: 1.5px solid var(--green); border-radius: 20px;
+    padding: 4px 14px; margin-bottom: 14px;
+  }
+
+  .slide-title {
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    color: var(--navy); text-align: center; margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .slide-subtitle {
+    font-size: 0.95rem; color: var(--text-light);
+    text-align: center; margin-bottom: 32px; max-width: 560px;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 1rem; padding: 12px 28px;
+    border: none; border-radius: 50px; cursor: pointer;
+    transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green), var(--sky-dark));
+    color: white; box-shadow: 0 4px 15px rgba(56,142,60,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56,142,60,0.4); }
+  .btn-secondary {
+    background: white; color: var(--navy); border: 2px solid var(--sky);
+  }
+  .btn-secondary:hover { background: var(--sky-light); transform: translateY(-2px); }
+  .btn-amber {
+    background: linear-gradient(135deg, var(--amber), var(--amber-dark));
+    color: white; box-shadow: 0 4px 15px rgba(245,124,0,0.3);
+  }
+  .btn-amber:hover { transform: translateY(-2px); }
+
+  .nav-btns {
+    display: flex; gap: 12px; justify-content: center;
+    margin-top: 36px; flex-wrap: wrap;
+  }
+
+  /* ══════════════════════════════════
+     SLIDE 1 — SCENE (Rich SVG)
+  ══════════════════════════════════ */
+  .hero-scene {
+    position: relative; width: 100%; max-width: 700px;
+    border-radius: var(--radius); overflow: hidden;
+    margin-bottom: 28px; box-shadow: var(--card-shadow);
+  }
+  .scene-svg-wrap {
+    width: 100%; position: relative; overflow: hidden;
+    height: 300px;
+  }
+  .scene-svg { width: 100%; height: 300px; display: block; }
+
+  /* ── CLEAN animations ── */
+  @keyframes sun-spin { from{transform:rotate(0deg);transform-origin:72px 52px} to{transform:rotate(360deg);transform-origin:72px 52px} }
+  .sun-rays { animation: sun-spin 18s linear infinite; transform-origin: 72px 52px; }
+
+  @keyframes cloud-l { 0%,100%{transform:translateX(0)} 50%{transform:translateX(14px)} }
+  @keyframes cloud-r { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-10px)} }
+  .cloud-l { animation: cloud-l 10s ease-in-out infinite; }
+  .cloud-r { animation: cloud-r 14s ease-in-out infinite; }
+
+  @keyframes bird-fly { 0%{transform:translateX(0) translateY(0)} 40%{transform:translateX(30px) translateY(-8px)} 80%{transform:translateX(14px) translateY(-3px)} 100%{transform:translateX(0) translateY(0)} }
+  .bird1 { animation: bird-fly 5s ease-in-out infinite; }
+  .bird2 { animation: bird-fly 6s ease-in-out infinite; animation-delay:-2.5s; }
+
+  @keyframes butterfly-f { 0%,100%{transform:translate(0,0) rotate(-8deg)} 50%{transform:translate(12px,-10px) rotate(8deg)} }
+  .butt1 { animation: butterfly-f 3s ease-in-out infinite; }
+  .butt2 { animation: butterfly-f 3.8s ease-in-out infinite; animation-delay:-1.8s; }
+
+  @keyframes tree-sway { 0%,100%{transform-origin:bottom center;transform:rotate(-1deg)} 50%{transform-origin:bottom center;transform:rotate(1.5deg)} }
+  .sway { animation: tree-sway 4s ease-in-out infinite; }
+  .sway2 { animation: tree-sway 5s ease-in-out infinite; animation-delay:-2s; }
+
+  @keyframes fish-sw { 0%,100%{transform:translateX(0)} 50%{transform:translateX(20px)} }
+  .fish1 { animation: fish-sw 5s ease-in-out infinite; }
+  .fish2 { animation: fish-sw 7s ease-in-out infinite; animation-delay:-3s; }
+  .fish3 { animation: fish-sw 6s ease-in-out infinite; animation-delay:-1.5s; }
+
+  @keyframes wave-mv { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  .wave-anim { animation: wave-mv 3.5s linear infinite; }
+  .wave-anim2 { animation: wave-mv 4.5s linear infinite reverse; }
+
+  @keyframes deer-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+  .deer { animation: deer-bob 2s ease-in-out infinite; }
+
+  @keyframes flower-bob { 0%,100%{transform:rotate(-5deg)} 50%{transform:rotate(5deg)} }
+  .flower { animation: flower-bob 3s ease-in-out infinite; transform-origin: bottom center; }
+
+  /* ── POLLUTED animations ── */
+  @keyframes smk-rise { 0%{opacity:0.85;transform:translateY(0) scale(0.8) rotate(0deg)} 100%{opacity:0;transform:translateY(-65px) scale(2) rotate(15deg)} }
+  .smk1{animation:smk-rise 2.5s ease-out infinite;}
+  .smk2{animation:smk-rise 2.5s ease-out infinite;animation-delay:-0.8s;}
+  .smk3{animation:smk-rise 2.5s ease-out infinite;animation-delay:-1.6s;}
+  .smk4{animation:smk-rise 2.2s ease-out infinite;animation-delay:-0.4s;}
+  .smk5{animation:smk-rise 2.2s ease-out infinite;animation-delay:-1.2s;}
+  .smk6{animation:smk-rise 2.8s ease-out infinite;animation-delay:-0.6s;}
+
+  @keyframes trash-drift { 0%,100%{transform:translateX(0) rotate(-5deg)} 50%{transform:translateX(10px) rotate(5deg)} }
+  .trash1{animation:trash-drift 4s ease-in-out infinite;}
+  .trash2{animation:trash-drift 5s ease-in-out infinite;animation-delay:-2s;}
+  .trash3{animation:trash-drift 3.5s ease-in-out infinite;animation-delay:-1s;}
+
+  @keyframes dead-fish { 0%,100%{transform:translateX(0) rotate(0deg)} 50%{transform:translateX(8px) rotate(25deg)} }
+  .dfish1{animation:dead-fish 4s ease-in-out infinite;}
+  .dfish2{animation:dead-fish 5s ease-in-out infinite;animation-delay:-2s;}
+
+  @keyframes skull-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+  .skull{animation:skull-bob 3s ease-in-out infinite;}
+
+  /* ── CSS visibility toggling for clean/dirty layers ── */
+  .clean-only { transition: opacity 1s ease; opacity: 1; pointer-events:none; }
+  .dirty-only { transition: opacity 1s ease; opacity: 0; pointer-events:none; }
+  .scene-svg-wrap.polluted .clean-only { opacity: 0; }
+  .scene-svg-wrap.polluted .dirty-only { opacity: 1; }
+
+  /* sky colour transition */
+  .sky-clean { transition: opacity 1s ease; opacity: 1; }
+  .sky-dirty  { transition: opacity 1s ease; opacity: 0; }
+  .scene-svg-wrap.polluted .sky-clean { opacity: 0; }
+  .scene-svg-wrap.polluted .sky-dirty  { opacity: 1; }
+
+  /* Toggle bar */
+  .toggle-scene-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; padding: 14px 20px; background: white;
+  }
+  .toggle-label {
+    font-family: 'Nunito', sans-serif; font-weight: 700;
+    font-size: 0.9rem; color: var(--text-light);
+  }
+  .toggle-switch {
+    width: 56px; height: 28px; border-radius: 14px;
+    background: var(--green); position: relative; cursor: pointer;
+    transition: background 0.4s; border: none;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .toggle-switch.on { background: #B71C1C; }
+  .toggle-knob {
+    width: 22px; height: 22px; border-radius: 50%; background: white;
+    position: absolute; top: 3px; left: 3px;
+    transition: left 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .toggle-switch.on .toggle-knob { left: 31px; }
+
+  /* Komponen cards */
+  .komponen-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px; width: 100%; max-width: 700px; margin-bottom: 24px;
+  }
+  .komponen-card {
+    border-radius: 16px; padding: 18px;
+    cursor: pointer; transition: all 0.3s;
+    border: 2px solid transparent;
+  }
+  .komponen-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .komponen-card.biotik { background: var(--green-light); border-color: var(--green); }
+  .komponen-card.abiotik { background: var(--sky-light); border-color: var(--sky); }
+  .komponen-card.expanded { border-width: 3px; }
+  .komponen-card h3 {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 1rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+  }
+  .komponen-card .examples {
+    display: none; margin-top: 8px;
+    flex-wrap: wrap; gap: 6px;
+  }
+  .komponen-card.expanded .examples { display: flex; }
+  .tag {
+    font-size: 0.78rem; padding: 3px 10px; border-radius: 20px;
+    font-family: 'Nunito', sans-serif; font-weight: 700;
+  }
+  .tag-green { background: var(--green); color: white; }
+  .tag-blue { background: var(--sky-dark); color: white; }
+  .tag-amber { background: var(--amber); color: white; }
+
+  /* Soalan Sokratik */
+  .sokratic-box {
+    width: 100%; max-width: 700px;
+    background: white; border-radius: 18px;
+    padding: 22px 24px; border-left: 5px solid var(--purple);
+    box-shadow: var(--card-shadow); margin-bottom: 20px;
+  }
+  .sokratic-box .qs-label {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--purple); margin-bottom: 10px;
+  }
+  .sokratic-questions { display: flex; flex-direction: column; gap: 10px; }
+  .sq-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; border-radius: 12px;
+    background: var(--purple-light); cursor: pointer; transition: all 0.25s;
+    border: 1.5px solid transparent;
+  }
+  .sq-item:hover { border-color: var(--purple); transform: translateX(4px); }
+  .sq-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+  .sq-text { font-size: 0.88rem; font-weight: 500; color: var(--text); }
+  .sq-answer {
+    display: none; margin-top: 8px; font-size: 0.83rem;
+    color: var(--text-light); padding: 8px 12px;
+    background: white; border-radius: 8px; border-left: 3px solid var(--purple);
+  }
+  .sq-item.revealed .sq-answer { display: block; }
+
+  /* ══════════════════════════════════
+     SLIDE 2 — JENIS PENCEMARAN (Peta i-Think Bubble + Pengurusan Grafik)
+  ══════════════════════════════════ */
+  .jenis-tabs {
+    display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center;
+  }
+  .jenis-tab {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.92rem; padding: 10px 20px; border-radius: 50px;
+    border: 2.5px solid; cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; gap: 6px; background: white;
+  }
+  .jenis-tab.udara { border-color: var(--sky-dark); color: var(--sky-dark); }
+  .jenis-tab.air { border-color: var(--teal); color: #00796B; }
+  .jenis-tab.tanah { border-color: var(--brown); color: var(--brown); }
+  .jenis-tab.active-udara { background: var(--sky-dark); color: white; }
+  .jenis-tab.active-air { background: var(--teal); color: white; }
+  .jenis-tab.active-tanah { background: var(--brown); color: white; }
+
+  /* Bubble / i-Think map */
+  .bubble-map {
+    width: 100%; max-width: 700px;
+    position: relative; display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 20px;
+  }
+  .bubble-main {
+    width: 120px; height: 120px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.92rem; text-align: center; color: white;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    z-index: 2; position: relative; padding: 10px;
+    transition: all 0.4s;
+  }
+  .bubble-row { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
+  .bubble-small {
+    width: 110px; height: 110px; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: 'Nunito', sans-serif; font-weight: 700;
+    font-size: 0.75rem; text-align: center; color: white; padding: 10px;
+    cursor: pointer; transition: all 0.3s; opacity: 0.85;
+    position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .bubble-small:hover { transform: scale(1.12); opacity: 1; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+  .bubble-small .b-icon { font-size: 1.5rem; margin-bottom: 4px; }
+  .bubble-connector {
+    width: 2px; height: 20px; background: #B0BEC5;
+    margin: 0 auto;
+  }
+
+  /* Detail card */
+  .jenis-detail {
+    width: 100%; max-width: 700px;
+    background: white; border-radius: 18px;
+    padding: 22px 24px; box-shadow: var(--card-shadow);
+    margin-bottom: 16px; display: none;
+    animation: fadeUp 0.35s ease;
+  }
+  .jenis-detail.visible { display: block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .jenis-detail h3 {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 1.1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .jenis-detail p { font-size: 0.88rem; color: var(--text-light); margin-bottom: 12px; line-height: 1.6; }
+
+  /* Graphic organizer — punca table */
+  .punca-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .punca-table th {
+    background: #ECEFF1; font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.82rem; padding: 10px 14px; text-align: left;
+    border-radius: 8px 8px 0 0;
+  }
+  .punca-table td {
+    font-size: 0.83rem; padding: 9px 14px;
+    border-bottom: 1px solid #F0F4F8; vertical-align: top;
+  }
+  .punca-table tr:last-child td { border-bottom: none; }
+  .punca-table tr:hover td { background: #F8F9FA; }
+  .punca-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: 'Nunito', sans-serif; font-weight: 700;
+    font-size: 0.78rem; padding: 2px 10px; border-radius: 20px; color: white;
+  }
+
+  /* ══════════════════════════════════
+     SLIDE 3 — KESAN (Enam Topi Pemikiran — 3 topi selected)
+  ══════════════════════════════════ */
+  .topi-intro {
+    width: 100%; max-width: 700px;
+    background: white; border-radius: 18px;
+    padding: 16px 20px; margin-bottom: 20px;
+    box-shadow: var(--card-shadow);
+    border-left: 5px solid var(--amber);
+  }
+  .topi-intro p { font-size: 0.87rem; color: var(--text-light); line-height: 1.6; }
+  .topi-intro strong { color: var(--navy); }
+
+  .topi-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 14px; width: 100%; max-width: 700px; margin-bottom: 20px;
+  }
+  .topi-card {
+    border-radius: 18px; padding: 18px 14px;
+    text-align: center; cursor: pointer; transition: all 0.3s;
+    border: 3px solid transparent; position: relative; overflow: hidden;
+  }
+  .topi-card:hover { transform: translateY(-5px); }
+  .topi-hat {
+    font-size: 2.2rem; margin-bottom: 8px; display: block;
+    animation: hat-bob 2s ease-in-out infinite;
+  }
+  @keyframes hat-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+  .topi-card h4 {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.88rem; margin-bottom: 4px;
+  }
+  .topi-card .topi-role {
+    font-size: 0.74rem; color: var(--text-light); margin-bottom: 10px;
+  }
+  .topi-card.active-topi { transform: translateY(-5px); border-width: 3px; }
+  .topi-putih { background: #FAFAFA; border-color: #CFD8DC; }
+  .topi-putih.active-topi { border-color: #90A4AE; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+  .topi-hitam { background: #ECEFF1; border-color: #B0BEC5; }
+  .topi-hitam.active-topi { border-color: #455A64; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+  .topi-kuning { background: #FFF9C4; border-color: #FDD835; }
+  .topi-kuning.active-topi { border-color: #F9A825; box-shadow: 0 8px 24px rgba(249,168,37,0.3); }
+
+  .topi-content {
+    width: 100%; max-width: 700px;
+    background: white; border-radius: 18px;
+    padding: 22px 24px; box-shadow: var(--card-shadow);
+    display: none; margin-bottom: 16px; animation: fadeUp 0.3s ease;
+  }
+  .topi-content.visible { display: block; }
+  .topi-content h3 {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 1.05rem; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+  .kesan-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .kesan-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; border-radius: 12px; font-size: 0.87rem; line-height: 1.55;
+  }
+  .kesan-list li .li-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+  /* kesan visual */
+  .kesan-visual {
+    display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .kesan-stat {
+    flex: 1; min-width: 120px; border-radius: 14px;
+    padding: 14px; text-align: center;
+  }
+  .kesan-stat .stat-num {
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: 1.6rem; display: block;
+  }
+  .kesan-stat .stat-label { font-size: 0.78rem; color: var(--text-light); }
+
+  /* ══════════════════════════════════
+     SLIDE 4 — LANGKAH (Peta Minda + Soalan Bercapah)
+  ══════════════════════════════════ */
+  .mind-map-wrap {
+    width: 100%; max-width: 700px; margin-bottom: 24px;
+  }
+  .mm-center {
+    text-align: center; margin-bottom: 20px;
+  }
+  .mm-center-bubble {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--green), var(--sky-dark));
+    color: white; border-radius: 50px;
+    padding: 14px 28px;
+    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem;
+    box-shadow: 0 6px 20px rgba(56,142,60,0.35);
+  }
+  .mm-branches { display: flex; flex-direction: column; gap: 12px; }
+  .mm-branch {
+    background: white; border-radius: 16px;
+    padding: 16px 18px; box-shadow: var(--card-shadow);
+    border-left: 5px solid var(--green);
+    cursor: pointer; transition: all 0.3s;
+    position: relative;
+  }
+  .mm-branch:nth-child(2) { border-left-color: var(--sky-dark); }
+  .mm-branch:nth-child(3) { border-left-color: var(--amber-dark); }
+  .mm-branch:hover { transform: translateX(4px); }
+  .mm-branch-header {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mm-branch-title {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 1rem; display: flex; align-items: center; gap: 8px;
+  }
+  .mm-branch-arrow {
+    font-size: 1.2rem; transition: transform 0.3s; color: var(--text-light);
+  }
+  .mm-branch.open .mm-branch-arrow { transform: rotate(90deg); }
+  .mm-sub {
+    display: none; margin-top: 14px; padding-top: 14px;
+    border-top: 1px dashed #ECEFF1;
+    flex-direction: column; gap: 8px;
+  }
+  .mm-branch.open .mm-sub { display: flex; }
+  .mm-sub-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 12px; border-radius: 10px;
+    font-size: 0.86rem; line-height: 1.5;
+  }
+  .mm-sub-item .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0; margin-top: 6px;
+  }
+
+  /* Soalan Bercapah */
+  .bercapah-box {
+    width: 100%; max-width: 700px;
+    background: linear-gradient(135deg, #E8F5E9, #E3F2FD);
+    border-radius: 18px; padding: 22px 24px;
+    box-shadow: var(--card-shadow); margin-bottom: 20px;
+  }
+  .bercapah-box h3 {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 1rem; color: var(--navy); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .bercapah-questions { display: flex; flex-direction: column; gap: 10px; }
+  .bq-item {
+    background: white; border-radius: 12px; padding: 12px 16px;
+    display: flex; align-items: flex-start; gap: 10px;
+    cursor: pointer; transition: all 0.25s; border: 1.5px solid transparent;
+  }
+  .bq-item:hover { border-color: var(--green); transform: translateX(4px); }
+  .bq-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--green); color: white;
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .bq-text { font-size: 0.87rem; line-height: 1.5; color: var(--text); }
+  .bq-ideas {
+    display: none; margin-top: 8px; padding: 8px 12px;
+    background: var(--green-light); border-radius: 8px;
+    font-size: 0.82rem; color: var(--green-dark); line-height: 1.5;
+  }
+  .bq-item.revealed .bq-ideas { display: block; }
+
+  /* ══════════════════════════════════
+     SLIDE 5 — REFLEKSI (Lingkaran Soalan)
+  ══════════════════════════════════ */
+  .lingkaran-wrap {
+    width: 100%; max-width: 700px;
+    position: relative; margin-bottom: 24px;
+  }
+  .lingkaran-title {
+    text-align: center; margin-bottom: 20px;
+  }
+  .lingkaran-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-bottom: 20px;
+  }
+  .lingkaran-card {
+    background: white; border-radius: 16px; padding: 18px;
+    box-shadow: var(--card-shadow); cursor: pointer;
+    transition: all 0.3s; border: 2px solid transparent;
+    text-align: center;
+  }
+  .lingkaran-card:hover { transform: translateY(-3px); border-color: var(--sky); }
+  .lingkaran-card.answered { border-color: var(--green); background: var(--green-light); }
+  .ling-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+  .ling-level {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-light); margin-bottom: 4px;
+  }
+  .ling-q {
+    font-size: 0.87rem; font-weight: 500; color: var(--text); line-height: 1.5;
+  }
+  .ling-a {
+    display: none; margin-top: 10px; padding: 8px 12px;
+    background: white; border-radius: 8px;
+    font-size: 0.82rem; color: var(--green-dark);
+    border-left: 3px solid var(--green); text-align: left; line-height: 1.5;
+  }
+  .lingkaran-card.answered .ling-a { display: block; }
+
+  /* Tekad banner */
+  .tekad-banner {
+    width: 100%; max-width: 700px;
+    background: linear-gradient(135deg, var(--green), var(--sky-dark));
+    border-radius: 20px; padding: 28px 24px; text-align: center;
+    box-shadow: 0 8px 32px rgba(56,142,60,0.3); margin-bottom: 20px;
+    color: white;
+  }
+  .tekad-banner h2 {
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: 1.5rem; margin-bottom: 8px;
+  }
+  .tekad-banner p { font-size: 0.92rem; opacity: 0.92; line-height: 1.6; }
+  .tekad-pledge {
+    margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  }
+  .pledge-btn {
+    background: rgba(255,255,255,0.2); color: white;
+    border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 50px; padding: 9px 20px;
+    font-family: 'Nunito', sans-serif; font-weight: 700;
+    font-size: 0.88rem; cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pledge-btn:hover, .pledge-btn.pledged {
+    background: white; color: var(--green-dark); border-color: white;
+    transform: scale(1.05);
+  }
+
+  /* completion stars */
+  .stars-wrap { text-align: center; padding: 12px; }
+  .star-icon { font-size: 2rem; display: inline-block; animation: star-pop 0.4s ease; }
+  @keyframes star-pop { 0%{transform:scale(0)} 80%{transform:scale(1.2)} 100%{transform:scale(1)} }
+
+  /* ══════ RESPONSIVE ══════ */
+  @media (max-width: 500px) {
+    .topi-grid { grid-template-columns: 1fr 1fr; }
+    .topi-grid .topi-card:last-child { grid-column: span 2; }
+    .komponen-grid { grid-template-columns: 1fr; }
+    .lingkaran-grid { grid-template-columns: 1fr; }
+    .bubble-row { gap: 10px; }
+    .bubble-small { width: 90px; height: 90px; font-size: 0.68rem; }
+    .mm-center-bubble { font-size: 0.88rem; }
+  }
+
+  /* tooltips */
+  .tooltip { position: relative; }
+  .tooltip-text {
+    visibility: hidden; position: absolute; bottom: 110%; left: 50%;
+    transform: translateX(-50%); background: var(--navy); color: white;
+    padding: 6px 12px; border-radius: 8px; font-size: 0.78rem;
+    white-space: nowrap; z-index: 10; font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+  }
+  .tooltip:hover .tooltip-text { visibility: visible; }
+
+  /* ── alat berfikir badge ── */
+  .alat-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: 'Nunito', sans-serif; font-weight: 700;
+    font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 20px;
+    background: var(--purple-light); color: var(--purple);
+    border: 1px solid var(--purple); margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressBar" style="width:20%"></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-title">
+    <span class="leaf">🌿</span> Alam Sekitar Kita
+  </div>
+  <div class="nav-dots" id="navDots">
+    <div class="nav-dot active" onclick="goToSlide(0)" title="Pengenalan"></div>
+    <div class="nav-dot" onclick="goToSlide(1)" title="Jenis Pencemaran"></div>
+    <div class="nav-dot" onclick="goToSlide(2)" title="Kesan"></div>
+    <div class="nav-dot" onclick="goToSlide(3)" title="Langkah Mengatasi"></div>
+    <div class="nav-dot" onclick="goToSlide(4)" title="Refleksi"></div>
+  </div>
+  <div class="nav-counter" id="navCounter">1 / 5</div>
+</nav>
+
+<div class="slides-wrap">
+
+<!-- ══════════════════════════
+     SLIDE 1 — PENGENALAN
+══════════════════════════ -->
+<div class="slide active" id="slide-0">
+  <div class="section-label">🌍 Topik 1</div>
+  <h1 class="slide-title">Pengenalan Pencemaran Alam Sekitar</h1>
+  <p class="slide-subtitle">Apakah yang berlaku kepada alam sekitar kita? Jom kita terokai!</p>
+
+  <!-- Scene Toggle -->
+  <div class="hero-scene" style="max-width:700px">
+    <div class="scene-svg-wrap" id="sceneBg">
+      <svg class="scene-svg" viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Clean sky gradient -->
+          <linearGradient id="skyClean" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#64B5F6"/>
+            <stop offset="100%" stop-color="#B3E5FC"/>
+          </linearGradient>
+          <!-- Dirty sky gradient -->
+          <linearGradient id="skyDirty" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4A5568"/>
+            <stop offset="100%" stop-color="#718096"/>
+          </linearGradient>
+          <!-- Ground clean -->
+          <linearGradient id="groundClean" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#81C784"/>
+            <stop offset="100%" stop-color="#388E3C"/>
+          </linearGradient>
+          <!-- Ground dirty -->
+          <linearGradient id="groundDirty" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#795548"/>
+            <stop offset="100%" stop-color="#4E342E"/>
+          </linearGradient>
+          <!-- River clean -->
+          <linearGradient id="riverClean" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4FC3F7"/>
+            <stop offset="100%" stop-color="#0288D1"/>
+          </linearGradient>
+          <!-- River dirty -->
+          <linearGradient id="riverDirty" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#5D4037"/>
+            <stop offset="100%" stop-color="#3E2723"/>
+          </linearGradient>
+          <filter id="blur2"><feGaussianBlur stdDeviation="2"/></filter>
+          <filter id="blur1"><feGaussianBlur stdDeviation="1"/></filter>
+        </defs>
+
+        <!-- ══ SKY backgrounds (layered) ══ -->
+        <rect class="sky-clean" x="0" y="0" width="700" height="300" fill="url(#skyClean)"/>
+        <rect class="sky-dirty" x="0" y="0" width="700" height="300" fill="url(#skyDirty)"/>
+
+        <!-- ══ GROUND ══ -->
+        <rect class="clean-only" x="0" y="198" width="700" height="102" fill="url(#groundClean)"/>
+        <rect class="dirty-only" x="0" y="198" width="700" height="102" fill="url(#groundDirty)"/>
+        <!-- ground texture cracks (dirty only) -->
+        <g class="dirty-only">
+          <path d="M60,210 Q75,220 65,235" stroke="#4E342E" stroke-width="1.5" fill="none"/>
+          <path d="M200,215 Q210,225 205,240" stroke="#4E342E" stroke-width="1.2" fill="none"/>
+          <path d="M500,212 Q512,222 508,238" stroke="#4E342E" stroke-width="1.4" fill="none"/>
+          <path d="M620,218 Q630,228 625,242" stroke="#4E342E" stroke-width="1.1" fill="none"/>
+        </g>
+
+        <!-- ══ RIVER / WATER ══ -->
+        <rect class="clean-only" x="0" y="220" width="700" height="80" fill="url(#riverClean)" opacity="0.85"/>
+        <rect class="dirty-only" x="0" y="220" width="700" height="80" fill="url(#riverDirty)" opacity="0.9"/>
+        <!-- wave (clean) -->
+        <g class="clean-only">
+          <g class="wave-anim">
+            <path d="M0,228 Q35,222 70,228 Q105,234 140,228 Q175,222 210,228 Q245,234 280,228 Q315,222 350,228 Q385,234 420,228 Q455,222 490,228 Q525,234 560,228 Q595,222 630,228 Q665,234 700,228 Q735,222 770,228 Q805,234 840,228 Q875,222 910,228 Q945,234 980,228 Q1015,222 1050,228 Q1085,234 1120,228 Q1155,222 1190,228 Q1225,234 1260,228 Q1295,222 1330,228 Q1365,234 1400,228" stroke="rgba(255,255,255,0.55)" stroke-width="2" fill="none"/>
+          </g>
+          <g class="wave-anim2" style="opacity:0.4">
+            <path d="M0,238 Q35,232 70,238 Q105,244 140,238 Q175,232 210,238 Q245,244 280,238 Q315,232 350,238 Q385,244 420,238 Q455,232 490,238 Q525,244 560,238 Q595,232 630,238 Q665,244 700,238 Q735,232 770,238 Q805,244 840,238 Q875,232 910,238 Q945,244 980,238 Q1015,232 1050,238 Q1085,244 1120,238 Q1155,232 1190,238 Q1225,244 1260,238 Q1295,232 1330,238 Q1365,244 1400,238" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none"/>
+          </g>
+        </g>
+        <!-- dark sludge bubbles (dirty) -->
+        <g class="dirty-only">
+          <circle cx="120" cy="240" r="8" fill="#6D4C41" opacity="0.7"/>
+          <circle cx="300" cy="250" r="6" fill="#5D4037" opacity="0.6"/>
+          <circle cx="480" cy="238" r="10" fill="#4E342E" opacity="0.7"/>
+          <circle cx="600" cy="255" r="7" fill="#6D4C41" opacity="0.5"/>
+          <!-- oil slick rainbow shimmer -->
+          <ellipse cx="350" cy="245" rx="120" ry="12" fill="none" stroke="rgba(160,100,200,0.35)" stroke-width="5"/>
+          <ellipse cx="350" cy="245" rx="100" ry="9" fill="none" stroke="rgba(80,180,200,0.25)" stroke-width="4"/>
+          <!-- foam/scum line -->
+          <path d="M0,235 Q50,230 100,235 Q150,240 200,235 Q250,230 300,235 Q350,240 400,235 Q450,230 500,235 Q550,240 600,235 Q650,230 700,235" stroke="rgba(210,190,150,0.5)" stroke-width="3" fill="none"/>
+        </g>
+
+        <!-- ══ HILLS (background) ══ -->
+        <ellipse class="clean-only" cx="580" cy="200" rx="180" ry="70" fill="#A5D6A7" opacity="0.6"/>
+        <ellipse class="clean-only" cx="160" cy="210" rx="140" ry="55" fill="#C8E6C9" opacity="0.5"/>
+        <ellipse class="dirty-only" cx="580" cy="200" rx="180" ry="70" fill="#6D4C41" opacity="0.5"/>
+        <ellipse class="dirty-only" cx="160" cy="210" rx="140" ry="55" fill="#795548" opacity="0.45"/>
+
+        <!-- ══ SUN (clean) ══ -->
+        <g class="clean-only">
+          <!-- rays -->
+          <g class="sun-rays">
+            <line x1="72" y1="30" x2="72" y2="18" stroke="#FFE082" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="72" y1="74" x2="72" y2="86" stroke="#FFE082" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="48" y1="52" x2="36" y2="52" stroke="#FFE082" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="96" y1="52" x2="108" y2="52" stroke="#FFE082" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="55" y1="35" x2="47" y2="27" stroke="#FFE082" stroke-width="2" stroke-linecap="round"/>
+            <line x1="89" y1="69" x2="97" y2="77" stroke="#FFE082" stroke-width="2" stroke-linecap="round"/>
+            <line x1="89" y1="35" x2="97" y2="27" stroke="#FFE082" stroke-width="2" stroke-linecap="round"/>
+            <line x1="55" y1="69" x2="47" y2="77" stroke="#FFE082" stroke-width="2" stroke-linecap="round"/>
+          </g>
+          <circle cx="72" cy="52" r="22" fill="#FFD54F"/>
+          <circle cx="72" cy="52" r="17" fill="#FFE082"/>
+        </g>
+        <!-- Hazy sun (dirty) — barely visible behind smog -->
+        <g class="dirty-only">
+          <circle cx="72" cy="52" r="26" fill="#B0BEC5" opacity="0.4" filter="url(#blur2)"/>
+          <circle cx="72" cy="52" r="18" fill="#9E9E9E" opacity="0.3"/>
+        </g>
+
+        <!-- ══ WHITE CLOUDS (clean) ══ -->
+        <g class="clean-only">
+          <g class="cloud-l">
+            <ellipse cx="200" cy="55" rx="50" ry="22" fill="white" opacity="0.9"/>
+            <ellipse cx="170" cy="62" rx="32" ry="18" fill="white" opacity="0.9"/>
+            <ellipse cx="232" cy="60" rx="36" ry="19" fill="white" opacity="0.85"/>
+          </g>
+          <g class="cloud-r">
+            <ellipse cx="480" cy="42" rx="58" ry="24" fill="white" opacity="0.85"/>
+            <ellipse cx="445" cy="50" rx="36" ry="20" fill="white" opacity="0.8"/>
+            <ellipse cx="518" cy="48" rx="40" ry="21" fill="white" opacity="0.8"/>
+          </g>
+          <g class="cloud-l" style="animation-delay:-5s">
+            <ellipse cx="630" cy="70" rx="42" ry="18" fill="white" opacity="0.75"/>
+            <ellipse cx="608" cy="76" rx="28" ry="15" fill="white" opacity="0.7"/>
+          </g>
+        </g>
+        <!-- SMOG CLOUDS (dirty) -->
+        <g class="dirty-only">
+          <ellipse cx="200" cy="55" rx="70" ry="30" fill="#607D8B" opacity="0.7" filter="url(#blur1)"/>
+          <ellipse cx="170" cy="68" rx="50" ry="25" fill="#546E7A" opacity="0.65"/>
+          <ellipse cx="480" cy="42" rx="80" ry="32" fill="#455A64" opacity="0.75" filter="url(#blur1)"/>
+          <ellipse cx="520" cy="55" rx="55" ry="26" fill="#607D8B" opacity="0.6"/>
+          <ellipse cx="630" cy="70" rx="60" ry="26" fill="#546E7A" opacity="0.68"/>
+          <ellipse cx="340" cy="48" rx="65" ry="28" fill="#37474F" opacity="0.6" filter="url(#blur1)"/>
+        </g>
+
+        <!-- ══ BIRDS (clean) ══ -->
+        <g class="clean-only">
+          <g class="bird1">
+            <path d="M310,38 Q316,32 322,38" stroke="#1565C0" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <path d="M326,36 Q332,30 338,36" stroke="#1565C0" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </g>
+          <g class="bird2">
+            <path d="M370,52 Q375,46 381,52" stroke="#1565C0" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M385,50 Q390,44 396,50" stroke="#1565C0" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M400,54 Q405,48 411,54" stroke="#1565C0" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          </g>
+        </g>
+
+        <!-- ══ BUTTERFLIES (clean) ══ -->
+        <g class="clean-only">
+          <g class="butt1">
+            <!-- butterfly 1 near tree -->
+            <ellipse cx="168" cy="130" rx="8" ry="5" fill="#FF8A65" opacity="0.85" transform="rotate(-20,168,130)"/>
+            <ellipse cx="156" cy="132" rx="7" ry="4.5" fill="#FF7043" opacity="0.75" transform="rotate(20,156,132)"/>
+            <ellipse cx="168" cy="137" rx="6" ry="4" fill="#FFAB40" opacity="0.7" transform="rotate(15,168,137)"/>
+            <ellipse cx="156" cy="139" rx="5.5" ry="3.5" fill="#FFA726" opacity="0.65" transform="rotate(-15,156,139)"/>
+            <line x1="162" y1="130" x2="162" y2="140" stroke="#5D4037" stroke-width="1"/>
+          </g>
+          <g class="butt2">
+            <!-- butterfly 2 near flowers -->
+            <ellipse cx="400" cy="175" rx="7" ry="4.5" fill="#CE93D8" opacity="0.85" transform="rotate(-15,400,175)"/>
+            <ellipse cx="389" cy="177" rx="6.5" ry="4" fill="#BA68C8" opacity="0.75" transform="rotate(20,389,177)"/>
+            <ellipse cx="400" cy="182" rx="5.5" ry="3.5" fill="#E1BEE7" opacity="0.7" transform="rotate(10,400,182)"/>
+            <ellipse cx="389" cy="184" rx="5" ry="3" fill="#CE93D8" opacity="0.6" transform="rotate(-10,389,184)"/>
+            <line x1="394" y1="175" x2="394" y2="185" stroke="#5D4037" stroke-width="1"/>
+          </g>
+        </g>
+
+        <!-- ══ TREES ══ -->
+        <!-- Tree 1 — tall lush (left) -->
+        <g class="clean-only sway">
+          <rect x="95" y="148" width="14" height="52" rx="4" fill="#8D6E63"/>
+          <ellipse cx="102" cy="148" rx="36" ry="38" fill="#43A047"/>
+          <ellipse cx="102" cy="138" rx="28" ry="30" fill="#66BB6A"/>
+          <ellipse cx="88" cy="155" rx="20" ry="18" fill="#388E3C"/>
+          <ellipse cx="118" cy="152" rx="18" ry="16" fill="#2E7D32"/>
+        </g>
+        <g class="dirty-only sway">
+          <rect x="95" y="148" width="14" height="52" rx="4" fill="#5D4037"/>
+          <ellipse cx="102" cy="148" rx="36" ry="38" fill="#4E342E" opacity="0.8"/>
+          <ellipse cx="102" cy="138" rx="28" ry="30" fill="#3E2723" opacity="0.7"/>
+        </g>
+
+        <!-- Tree 2 — medium (centre-left) -->
+        <g class="clean-only sway2">
+          <rect x="248" y="158" width="11" height="42" rx="3" fill="#8D6E63"/>
+          <ellipse cx="254" cy="158" rx="28" ry="30" fill="#4CAF50"/>
+          <ellipse cx="254" cy="148" rx="22" ry="24" fill="#81C784"/>
+          <ellipse cx="243" cy="163" rx="16" ry="14" fill="#388E3C"/>
+        </g>
+        <g class="dirty-only sway2">
+          <rect x="248" y="158" width="11" height="42" rx="3" fill="#5D4037"/>
+          <ellipse cx="254" cy="158" rx="28" ry="30" fill="#3E2723" opacity="0.75"/>
+          <ellipse cx="254" cy="148" rx="22" ry="24" fill="#4E342E" opacity="0.65"/>
+        </g>
+
+        <!-- Tree 3 — right side (pine-like) -->
+        <g class="clean-only">
+          <rect x="620" y="162" width="10" height="38" rx="3" fill="#8D6E63"/>
+          <polygon points="625,108 648,165 602,165" fill="#2E7D32"/>
+          <polygon points="625,125 644,170 606,170" fill="#43A047"/>
+          <polygon points="625,142 640,175 610,175" fill="#66BB6A"/>
+        </g>
+        <g class="dirty-only">
+          <rect x="620" y="162" width="10" height="38" rx="3" fill="#5D4037"/>
+          <polygon points="625,108 648,165 602,165" fill="#3E2723" opacity="0.7"/>
+          <polygon points="625,125 644,170 606,170" fill="#4E342E" opacity="0.65"/>
+          <polygon points="625,142 640,175 610,175" fill="#37474F" opacity="0.6"/>
+        </g>
+
+        <!-- ══ FLOWERS (clean) ══ -->
+        <g class="clean-only">
+          <!-- flower 1 -->
+          <g class="flower" style="transform-origin:340px 210px">
+            <line x1="340" y1="185" x2="340" y2="210" stroke="#388E3C" stroke-width="2"/>
+            <circle cx="340" cy="183" r="5" fill="#FF7043"/>
+            <circle cx="334" cy="180" r="4" fill="#FF8A65"/>
+            <circle cx="346" cy="180" r="4" fill="#FF8A65"/>
+            <circle cx="340" cy="175" r="4" fill="#FF7043"/>
+            <circle cx="340" cy="183" r="3" fill="#FFE082"/>
+          </g>
+          <!-- flower 2 -->
+          <g class="flower" style="transform-origin:360px 208px;animation-delay:-1s">
+            <line x1="360" y1="185" x2="360" y2="208" stroke="#388E3C" stroke-width="2"/>
+            <circle cx="360" cy="183" r="4.5" fill="#E91E63"/>
+            <circle cx="355" cy="180" r="3.5" fill="#F48FB1"/>
+            <circle cx="365" cy="180" r="3.5" fill="#F48FB1"/>
+            <circle cx="360" cy="175" r="3.5" fill="#E91E63"/>
+            <circle cx="360" cy="183" r="2.5" fill="#FFE082"/>
+          </g>
+          <!-- flower 3 -->
+          <g class="flower" style="transform-origin:375px 212px;animation-delay:-2s">
+            <line x1="375" y1="190" x2="375" y2="212" stroke="#388E3C" stroke-width="2"/>
+            <circle cx="375" cy="188" r="4" fill="#9C27B0"/>
+            <circle cx="370" cy="185" r="3.2" fill="#CE93D8"/>
+            <circle cx="380" cy="185" r="3.2" fill="#CE93D8"/>
+            <circle cx="375" cy="181" r="3.2" fill="#9C27B0"/>
+            <circle cx="375" cy="188" r="2.2" fill="#FFE082"/>
+          </g>
+          <!-- grass tufts -->
+          <path d="M310,210 Q314,200 318,210" stroke="#43A047" stroke-width="2" fill="none"/>
+          <path d="M318,210 Q322,198 326,210" stroke="#66BB6A" stroke-width="2" fill="none"/>
+          <path d="M392,210 Q396,201 400,210" stroke="#43A047" stroke-width="2" fill="none"/>
+          <path d="M400,210 Q404,203 408,210" stroke="#66BB6A" stroke-width="1.8" fill="none"/>
+          <!-- more grass -->
+          <path d="M450,210 Q453,203 456,210" stroke="#81C784" stroke-width="1.8" fill="none"/>
+          <path d="M456,210 Q459,205 462,210" stroke="#A5D6A7" stroke-width="1.6" fill="none"/>
+          <path d="M540,210 Q543,202 546,210" stroke="#43A047" stroke-width="2" fill="none"/>
+        </g>
+
+        <!-- ══ DEER (clean) ══ -->
+        <g class="clean-only deer">
+          <!-- body -->
+          <ellipse cx="560" cy="195" rx="22" ry="12" fill="#D2691E"/>
+          <!-- head -->
+          <ellipse cx="582" cy="185" rx="10" ry="8" fill="#D2691E"/>
+          <!-- neck -->
+          <rect x="572" y="183" width="10" height="14" rx="4" fill="#D2691E"/>
+          <!-- legs -->
+          <rect x="548" y="204" width="4" height="14" rx="2" fill="#A0522D"/>
+          <rect x="556" y="204" width="4" height="16" rx="2" fill="#A0522D"/>
+          <rect x="564" y="204" width="4" height="14" rx="2" fill="#A0522D"/>
+          <rect x="572" y="204" width="4" height="16" rx="2" fill="#A0522D"/>
+          <!-- antler -->
+          <path d="M582,177 Q578,168 574,164 M578,170 Q575,166 572,168" stroke="#8B4513" stroke-width="1.8" fill="none"/>
+          <!-- eye -->
+          <circle cx="587" cy="183" r="1.5" fill="#2c1a0e"/>
+          <!-- tail -->
+          <ellipse cx="540" cy="192" rx="5" ry="4" fill="white"/>
+        </g>
+
+        <!-- ══ FACTORY + SMOKE (dirty) ══ -->
+        <g class="dirty-only">
+          <!-- factory building -->
+          <rect x="410" y="155" width="80" height="65" fill="#455A64"/>
+          <rect x="430" y="145" width="15" height="20" fill="#37474F"/>
+          <rect x="455" y="140" width="15" height="25" fill="#37474F"/>
+          <rect x="475" y="148" width="12" height="17" fill="#37474F"/>
+          <!-- windows -->
+          <rect x="420" y="165" width="10" height="10" rx="1" fill="#F57F17" opacity="0.7"/>
+          <rect x="438" y="165" width="10" height="10" rx="1" fill="#F57F17" opacity="0.5"/>
+          <rect x="456" y="165" width="10" height="10" rx="1" fill="#F57F17" opacity="0.6"/>
+          <rect x="474" y="165" width="10" height="10" rx="1" fill="#BF360C" opacity="0.5"/>
+          <!-- chimneys -->
+          <rect x="425" y="130" width="10" height="25" rx="3" fill="#263238"/>
+          <rect x="450" y="125" width="10" height="25" rx="3" fill="#263238"/>
+          <rect x="472" y="132" width="9" height="20" rx="3" fill="#263238"/>
+          <!-- smoke puffs -->
+          <circle class="smk1" cx="430" cy="126" r="10" fill="#546E7A" opacity="0.8"/>
+          <circle class="smk2" cx="430" cy="120" r="12" fill="#455A64" opacity="0.7"/>
+          <circle class="smk3" cx="430" cy="114" r="14" fill="#37474F" opacity="0.6"/>
+          <circle class="smk4" cx="455" cy="121" r="11" fill="#546E7A" opacity="0.75"/>
+          <circle class="smk5" cx="455" cy="115" r="13" fill="#263238" opacity="0.65"/>
+          <circle class="smk6" cx="477" cy="128" r="9" fill="#455A64" opacity="0.7"/>
+        </g>
+
+        <!-- ══ RUBBISH / POLLUTION IN WATER (dirty) ══ -->
+        <g class="dirty-only">
+          <!-- plastic bottle -->
+          <g class="trash1">
+            <rect x="100" y="232" width="8" height="18" rx="3" fill="#AED6F1" opacity="0.8"/>
+            <rect x="102" y="230" width="4" height="5" rx="1" fill="#85C1E9" opacity="0.7"/>
+          </g>
+          <!-- tin can -->
+          <g class="trash2">
+            <rect x="280" y="236" width="12" height="16" rx="2" fill="#E74C3C" opacity="0.8"/>
+            <rect x="280" y="234" width="12" height="4" fill="#C0392B" opacity="0.7"/>
+            <rect x="280" y="248" width="12" height="4" fill="#C0392B" opacity="0.7"/>
+          </g>
+          <!-- plastic bag -->
+          <g class="trash3">
+            <ellipse cx="580" cy="244" rx="14" ry="10" fill="rgba(200,220,255,0.6)"/>
+            <path d="M574,244 Q580,234 586,244" stroke="rgba(150,180,220,0.6)" stroke-width="1.5" fill="rgba(200,220,255,0.4)"/>
+          </g>
+          <!-- dead fish 1 -->
+          <g class="dfish1">
+            <ellipse cx="195" cy="248" rx="16" ry="6" fill="#78909C" opacity="0.8"/>
+            <polygon points="211,248 220,242 220,254" fill="#607D8B" opacity="0.7"/>
+            <circle cx="188" cy="246" r="2" fill="white"/>
+            <circle cx="188" cy="246" r="1" fill="#000" opacity="0.6"/>
+            <!-- X eyes -->
+            <line x1="186" y1="244" x2="190" y2="248" stroke="white" stroke-width="1.2"/>
+            <line x1="190" y1="244" x2="186" y2="248" stroke="white" stroke-width="1.2"/>
+          </g>
+          <!-- dead fish 2 -->
+          <g class="dfish2">
+            <ellipse cx="500" cy="253" rx="13" ry="5" fill="#607D8B" opacity="0.75"/>
+            <polygon points="513,253 521,248 521,258" fill="#546E7A" opacity="0.65"/>
+            <line x1="493" y1="250" x2="497" y2="254" stroke="white" stroke-width="1"/>
+            <line x1="497" y1="250" x2="493" y2="254" stroke="white" stroke-width="1"/>
+          </g>
+          <!-- barrel of waste -->
+          <g class="skull">
+            <rect x="330" y="228" width="22" height="26" rx="4" fill="#D32F2F" opacity="0.9"/>
+            <rect x="328" y="226" width="26" height="5" rx="2" fill="#B71C1C" opacity="0.85"/>
+            <!-- skull symbol -->
+            <circle cx="341" cy="237" r="5" fill="white" opacity="0.7"/>
+            <circle cx="338" cy="240" r="1.5" fill="#D32F2F"/>
+            <circle cx="344" cy="240" r="1.5" fill="#D32F2F"/>
+            <path d="M338,243 Q341,246 344,243" stroke="#D32F2F" stroke-width="1.5" fill="none"/>
+            <!-- dripping ooze -->
+            <path d="M335,254 Q337,260 339,254" stroke="#4CAF50" stroke-width="2" fill="none" opacity="0.8"/>
+            <path d="M343,254 Q345,262 347,254" stroke="#8BC34A" stroke-width="2" fill="none" opacity="0.7"/>
+          </g>
+        </g>
+
+        <!-- ══ FISH (clean, swimming) ══ -->
+        <g class="clean-only">
+          <g class="fish1">
+            <ellipse cx="160" cy="252" rx="15" ry="8" fill="#EF6C00"/>
+            <polygon points="175,252 185,245 185,259" fill="#F57C00"/>
+            <circle cx="153" cy="250" r="2" fill="white"/>
+            <circle cx="153" cy="250" r="1" fill="#000"/>
+          </g>
+          <g class="fish2">
+            <ellipse cx="380" cy="260" rx="13" ry="7" fill="#1565C0"/>
+            <polygon points="393,260 402,254 402,266" fill="#0D47A1"/>
+            <circle cx="374" cy="258" r="1.8" fill="white"/>
+            <circle cx="374" cy="258" r="0.9" fill="#000"/>
+          </g>
+          <g class="fish3">
+            <ellipse cx="550" cy="255" rx="11" ry="6" fill="#E91E63"/>
+            <polygon points="561,255 569,250 569,260" fill="#AD1457"/>
+            <circle cx="545" cy="253" r="1.6" fill="white"/>
+            <circle cx="545" cy="253" r="0.8" fill="#000"/>
+          </g>
+          <!-- small fish -->
+          <ellipse class="fish1" cx="270" cy="268" rx="8" ry="4.5" fill="#4CAF50" style="animation-delay:-1s"/>
+          <polygon class="fish1" points="278,268 284,264 284,272" fill="#388E3C" style="animation-delay:-1s"/>
+        </g>
+
+        <!-- ══ MOUNTAIN / SCENERY bg (clean) ══ -->
+        <g class="clean-only">
+          <polygon points="600,198 660,120 720,198" fill="#BCAAA4" opacity="0.5"/>
+          <polygon points="620,198 670,130 720,198" fill="white" opacity="0.2"/>
+          <!-- snow cap -->
+          <polygon points="660,120 650,145 670,145" fill="white" opacity="0.7"/>
+        </g>
+
+        <!-- ══ ACID RAIN (dirty) ══ -->
+        <g class="dirty-only">
+          <line x1="150" y1="80" x2="140" y2="110" stroke="#B2DFDB" stroke-width="1.2" opacity="0.6" class="smk1"/>
+          <line x1="220" y1="75" x2="210" y2="105" stroke="#B2DFDB" stroke-width="1" opacity="0.5" class="smk2"/>
+          <line x1="320" y1="68" x2="310" y2="98" stroke="#DCEDC8" stroke-width="1.1" opacity="0.5" class="smk3"/>
+          <line x1="550" y1="72" x2="540" y2="102" stroke="#B2DFDB" stroke-width="1.2" opacity="0.55" class="smk4"/>
+          <line x1="620" y1="65" x2="610" y2="95" stroke="#DCEDC8" stroke-width="1" opacity="0.5" class="smk5"/>
+          <line x1="680" y1="78" x2="670" y2="108" stroke="#B2DFDB" stroke-width="1.1" opacity="0.45" class="smk6"/>
+          <!-- dead tree stumps -->
+          <rect x="310" y="175" width="10" height="30" rx="3" fill="#4E342E"/>
+          <path d="M315,175 Q308,162 302,158 M315,175 Q318,162 323,165" stroke="#4E342E" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <rect x="155" y="180" width="8" height="25" rx="2" fill="#3E2723"/>
+          <path d="M159,180 Q154,170 149,168 M159,180 Q163,172 167,174" stroke="#3E2723" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </g>
+
+        <!-- ══ LABEL BADGES ══ -->
+        <!-- Clean label -->
+        <g class="clean-only">
+          <rect x="8" y="8" width="110" height="28" rx="12" fill="rgba(56,142,60,0.85)"/>
+          <text x="63" y="27" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="12" fill="white">🌱 Alam Bersih</text>
+        </g>
+        <!-- Dirty label -->
+        <g class="dirty-only">
+          <rect x="8" y="8" width="130" height="28" rx="12" fill="rgba(183,28,28,0.85)"/>
+          <text x="73" y="27" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="12" fill="white">🏭 Alam Tercemar</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="toggle-scene-row">
+      <span class="toggle-label">🌱 Alam Bersih</span>
+      <button class="toggle-switch" id="sceneToggle" onclick="toggleScene()" aria-label="Toggle scene">
+        <div class="toggle-knob"></div>
+      </button>
+      <span class="toggle-label" style="color:#C62828">🏭 Alam Tercemar</span>
+    </div>
+  </div>
+
+  <!-- Komponen Biotik & Abiotik -->
+  <div class="alat-badge">🧩 Pengurusan Grafik</div>
+  <div class="komponen-grid">
+    <div class="komponen-card biotik" id="biotikCard" onclick="toggleKomponen('biotikCard')">
+      <h3>🌿 Komponen Biotik</h3>
+      <p style="font-size:0.83rem;color:var(--text-light);line-height:1.5">Benda <strong>hidup</strong> di alam sekitar.<br>Klik untuk lihat contoh!</p>
+      <div class="examples">
+        <span class="tag tag-green">🧑 Manusia</span>
+        <span class="tag tag-green">🐘 Haiwan</span>
+        <span class="tag tag-green">🌳 Tumbuhan</span>
+        <span class="tag tag-green">🍄 Pengurai</span>
+        <span class="tag tag-green">🦋 Pengguna</span>
+        <span class="tag tag-green">🌾 Pengeluar</span>
+      </div>
+    </div>
+    <div class="komponen-card abiotik" id="abiotikCard" onclick="toggleKomponen('abiotikCard')">
+      <h3>💧 Komponen Abiotik</h3>
+      <p style="font-size:0.83rem;color:var(--text-light);line-height:1.5">Benda <strong>bukan hidup</strong> di alam sekitar.<br>Klik untuk lihat contoh!</p>
+      <div class="examples">
+        <span class="tag tag-blue">💨 Udara</span>
+        <span class="tag tag-blue">💧 Air</span>
+        <span class="tag tag-blue">🪨 Tanah</span>
+        <span class="tag tag-blue">☀️ Cahaya Matahari</span>
+        <span class="tag tag-blue">🌡️ Suhu</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Definisi panel -->
+  <div style="width:100%;max-width:700px;background:white;border-radius:18px;padding:20px 24px;box-shadow:var(--card-shadow);margin-bottom:20px;border-top:4px solid var(--amber)">
+    <h3 style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;margin-bottom:8px;color:var(--navy)">📖 Apakah Pencemaran Alam Sekitar?</h3>
+    <p style="font-size:0.87rem;color:var(--text-light);line-height:1.7">
+      Pencemaran alam sekitar berlaku apabila terdapat kemasukan <strong style="color:var(--red)">bahan berbahaya</strong> ke dalam alam sekitar akibat <strong style="color:var(--navy)">aktiviti manusia</strong> sehingga melebihi tahap kualiti yang dibenarkan.
+      <br><br>
+      Contohnya aktiviti <span style="background:var(--amber-light);padding:1px 6px;border-radius:4px;font-weight:600">perindustrian</span>, <span style="background:var(--amber-light);padding:1px 6px;border-radius:4px;font-weight:600">pertanian</span> dan <span style="background:var(--amber-light);padding:1px 6px;border-radius:4px;font-weight:600">domestik</span> yang menghasilkan sisa buangan.
+    </p>
+  </div>
+
+  <!-- Soalan Sokratik -->
+  <div class="sokratic-box" style="max-width:700px">
+    <div class="qs-label">🤔 Soalan Sokratik — Fikirkan bersama!</div>
+    <div class="sokratic-questions">
+      <div class="sq-item" onclick="toggleSQ(this)">
+        <span class="sq-icon">❓</span>
+        <div>
+          <div class="sq-text">Mengapa alam sekitar penting untuk kehidupan kita sehari-hari?</div>
+          <div class="sq-answer">Alam sekitar menyediakan udara bersih, air, makanan dan tempat tinggal. Tanpa alam sekitar yang sihat, kita tidak boleh hidup dengan baik!</div>
+        </div>
+      </div>
+      <div class="sq-item" onclick="toggleSQ(this)">
+        <span class="sq-icon">💭</span>
+        <div>
+          <div class="sq-text">Siapakah yang bertanggungjawab menjaga alam sekitar?</div>
+          <div class="sq-answer">Semua orang bertanggungjawab — dari kanak-kanak hingga orang dewasa, kerajaan dan syarikat. Setiap tindakan kecil kita memberi kesan kepada alam sekitar.</div>
+        </div>
+      </div>
+      <div class="sq-item" onclick="toggleSQ(this)">
+        <span class="sq-icon">🌱</span>
+        <div>
+          <div class="sq-text">Jika kamu membuang sampah ke dalam sungai, apakah yang akan berlaku?</div>
+          <div class="sq-answer">Air sungai akan tercemar, ikan akan mati, dan air minum kita juga boleh terjejas. Satu tindakan kecil boleh memberi kesan besar!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="btn btn-primary" onclick="goToSlide(1)">Seterusnya: Jenis Pencemaran ➜</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     SLIDE 2 — JENIS PENCEMARAN
+══════════════════════════ -->
+<div class="slide" id="slide-1">
+  <div class="section-label">💨 Topik 2</div>
+  <h1 class="slide-title">Jenis-Jenis Pencemaran Alam Sekitar</h1>
+  <p class="slide-subtitle">Tiga jenis pencemaran utama yang mengancam bumi kita</p>
+
+  <div class="alat-badge">🗺️ Peta i-Think — Peta Buih</div>
+
+  <!-- ── PETA BUIH: 1 centre + 3 satellites only ── -->
+  <style>
+    .pb-wrap {
+      width: 100%; max-width: 480px; margin: 0 auto 10px;
+      position: relative; aspect-ratio: 1 / 1;
+    }
+    .pb-svg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; overflow: visible;
+    }
+    /* Centre bubble */
+    .pb-centre {
+      position: absolute;
+      width: 30%; aspect-ratio: 1/1; border-radius: 50%;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      background: #FFD600; border: 3.5px solid #F9A825;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-family: 'Nunito', sans-serif; font-weight: 800;
+      font-size: clamp(0.65rem, 2vw, 0.88rem);
+      color: #1A237E; text-align: center; line-height: 1.25;
+      box-shadow: 0 4px 18px rgba(249,168,37,0.45);
+      z-index: 2;
+    }
+    /* Satellite bubbles */
+    .pb-sat {
+      position: absolute;
+      width: 22%; aspect-ratio: 1/1; border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-family: 'Nunito', sans-serif; font-weight: 800;
+      font-size: clamp(0.56rem, 1.6vw, 0.75rem);
+      color: white; text-align: center; line-height: 1.22;
+      cursor: pointer; transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+      z-index: 3; padding: 6px;
+      border: 3px solid rgba(255,255,255,0.4);
+    }
+    .pb-sat:hover { transform: scale(1.13); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+    .pb-sat.sat-active { transform: scale(1.18); box-shadow: 0 8px 28px rgba(0,0,0,0.3); border-color: white; }
+    .pb-sat .sat-icon { font-size: clamp(1.1rem, 3vw, 1.5rem); line-height: 1; margin-bottom: 3px; }
+    /* Colours */
+    .pb-udara { background: #0288D1; }
+    .pb-air   { background: #00897B; }
+    .pb-tanah { background: #6D4C41; }
+    /* 3 positions: top (90°), bottom-left (210°), bottom-right (330°) — radius 37% */
+    .pb-sat[data-pos="top"]   { top: calc(13% - 11%); left: calc(50% - 11%); }
+    .pb-sat[data-pos="botl"]  { top: calc(82% - 11%); left: calc(18% - 11%); }
+    .pb-sat[data-pos="botr"]  { top: calc(82% - 11%); left: calc(82% - 11%); }
+
+    /* Detail panel */
+    .pb-detail {
+      display: none; width: 100%; max-width: 480px; margin: 14px auto 0;
+      border-radius: 16px; padding: 18px 20px;
+      animation: fadeUp 0.3s ease;
+    }
+    .pb-detail.visible { display: block; }
+    .pb-detail h3 {
+      font-family: 'Nunito', sans-serif; font-weight: 800;
+      font-size: 1rem; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .pb-detail p { font-size: 0.85rem; color: var(--text-light); margin-bottom: 10px; line-height: 1.6; }
+    .pb-detail table { width: 100%; border-collapse: collapse; }
+    .pb-detail th { background: #ECEFF1; font-family: 'Nunito', sans-serif; font-weight: 800;
+      font-size: 0.8rem; padding: 9px 12px; text-align: left; }
+    .pb-detail td { font-size: 0.82rem; padding: 8px 12px;
+      border-bottom: 1px solid #F0F4F8; vertical-align: top; line-height: 1.45; }
+    .pb-detail tr:last-child td { border-bottom: none; }
+    .pb-detail tr:hover td { background: #F8F9FA; }
+  </style>
+
+  <div class="pb-wrap" id="pbWrap">
+    <!-- SVG connector lines: centre (50,50) → each satellite centre -->
+    <svg class="pb-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <!-- to top -->   <line x1="50" y1="50" x2="50" y2="13"  stroke="#B0BEC5" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <!-- to bot-left --><line x1="50" y1="50" x2="18" y2="82"  stroke="#B0BEC5" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <!-- to bot-right --><line x1="50" y1="50" x2="82" y2="82" stroke="#B0BEC5" stroke-width="1.2" stroke-dasharray="4,3"/>
+    </svg>
+
+    <!-- Centre -->
+    <div class="pb-centre">🌍<br>Pencemaran<br>Alam<br>Sekitar</div>
+
+    <!-- 3 satellites -->
+    <div class="pb-sat pb-udara" data-pos="top"  data-jenis="udara" onclick="showJenisBuih(this,'udara')">
+      <span class="sat-icon">💨</span>Pencemaran<br>Udara
+    </div>
+    <div class="pb-sat pb-air"   data-pos="botl" data-jenis="air"   onclick="showJenisBuih(this,'air')">
+      <span class="sat-icon">💧</span>Pencemaran<br>Air
+    </div>
+    <div class="pb-sat pb-tanah" data-pos="botr" data-jenis="tanah" onclick="showJenisBuih(this,'tanah')">
+      <span class="sat-icon">🪨</span>Pencemaran<br>Tanah
+    </div>
+  </div>
+
+  <p style="font-size:0.78rem;color:var(--text-light);text-align:center;margin-top:4px;margin-bottom:4px;max-width:480px;margin-left:auto;margin-right:auto">
+    👆 Klik setiap bulatan untuk lihat maklumat lanjut!
+  </p>
+
+  <!-- Detail panels — revealed on bubble click -->
+  <div class="pb-detail" id="pb-detail-udara" style="background:var(--sky-light);border-left:5px solid var(--sky-dark)">
+    <h3 style="color:var(--sky-dark)">💨 Pencemaran Udara</h3>
+    <p>Udara dicemari oleh bahan-bahan berbahaya yang menjejaskan kesihatan manusia dan alam sekitar.</p>
+    <table>
+      <thead><tr><th>🔍 Punca</th><th>📝 Penerangan</th></tr></thead>
+      <tbody>
+        <tr><td><span class="punca-badge" style="background:var(--sky-dark)">🚗 Kenderaan</span></td><td>Asap daripada kereta, bas dan motosikal mengandungi gas karbon monoksida yang berbahaya</td></tr>
+        <tr><td><span class="punca-badge" style="background:var(--sky)">🏭 Kilang</span></td><td>Cerobong asap kilang membebaskan gas berbahaya ke udara</td></tr>
+        <tr><td><span class="punca-badge" style="background:#78909C">🚬 Rokok</span></td><td>Asap rokok mengandungi lebih 4,000 bahan kimia berbahaya</td></tr>
+        <tr><td><span class="punca-badge" style="background:#BF360C">🌋 Gunung Berapi</span></td><td>Fenomena semula jadi yang mengeluarkan asap dan abu</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pb-detail" id="pb-detail-air" style="background:var(--teal-light);border-left:5px solid #00796B">
+    <h3 style="color:#00796B">💧 Pencemaran Air</h3>
+    <p>Sumber air seperti sungai, tasik dan laut dicemari oleh sisa buangan sehingga menjejaskan kualiti air.</p>
+    <table>
+      <thead><tr><th>🔍 Punca</th><th>📝 Penerangan</th></tr></thead>
+      <tbody>
+        <tr><td><span class="punca-badge" style="background:var(--teal)">🏭 Sisa Industri</span></td><td>Sisa dan bahan kimia dari kilang dibuang ke dalam sungai dan laut</td></tr>
+        <tr><td><span class="punca-badge" style="background:#0288D1">💣 Bahan Peledak</span></td><td>Penggunaan bahan peledak untuk menangkap ikan merosakkan ekosistem akuatik</td></tr>
+        <tr><td><span class="punca-badge" style="background:#2E7D32">🌾 Pestisid</span></td><td>Racun dan baja kimia dari ladang mengalir masuk ke dalam sumber air</td></tr>
+        <tr><td><span class="punca-badge" style="background:#455A64">🗑️ Sampah</span></td><td>Pembuangan sampah ke dalam parit dan sungai mencemarkan sumber air</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pb-detail" id="pb-detail-tanah" style="background:#EFEBE9;border-left:5px solid var(--brown)">
+    <h3 style="color:var(--brown)">🪨 Pencemaran Tanah</h3>
+    <p>Tanah kehilangan kesuburan dan tidak lagi sesuai untuk kegiatan pertanian dan kehidupan.</p>
+    <table>
+      <thead><tr><th>🔍 Punca</th><th>📝 Penerangan</th></tr></thead>
+      <tbody>
+        <tr><td><span class="punca-badge" style="background:var(--brown)">☠️ Racun Perosak</span></td><td>Penggunaan racun perosak dan baja kimia berlebihan merosakkan struktur tanah</td></tr>
+        <tr><td><span class="punca-badge" style="background:#BF360C">🧪 Asid</span></td><td>Sebatian asid dari hujan asid dan bahan kimia memusnahkan kesuburan tanah</td></tr>
+        <tr><td><span class="punca-badge" style="background:#37474F">🏭 Sisa Industri</span></td><td>Pembuangan sisa industri dan logam berat mencemarkan tanah</td></tr>
+        <tr><td><span class="punca-badge" style="background:#6D4C41">🧹 Detergen</span></td><td>Sisa domestik seperti detergen meresap ke dalam tanah</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="alat-badge" style="margin-top:20px">📊 Pengurusan Grafik — Jadual Punca</div>
+
+  <div class="nav-btns">
+    <button class="btn btn-secondary" onclick="goToSlide(0)">← Kembali</button>
+    <button class="btn btn-primary" onclick="goToSlide(2)">Seterusnya: Kesan Pencemaran ➜</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     SLIDE 3 — KESAN (Enam Topi)
+══════════════════════════ -->
+<div class="slide" id="slide-2">
+  <div class="section-label">⚠️ Topik 3</div>
+  <h1 class="slide-title">Kesan Pencemaran Alam Sekitar</h1>
+  <p class="slide-subtitle">Mari kita fikirkan kesan pencemaran dari pelbagai sudut pandangan</p>
+
+  <div class="alat-badge">🎩 Enam Topi Pemikiran (3 Topi Dipilih)</div>
+
+  <div class="topi-intro" style="max-width:700px">
+    <p><strong>Enam Topi Pemikiran</strong> membantu kita berfikir dari sudut yang berbeza. Hari ini kita gunakan <strong>3 topi</strong> untuk mengkaji kesan pencemaran. Klik pada topi untuk meneroka!</p>
+  </div>
+
+  <div class="topi-grid" style="max-width:700px">
+    <div class="topi-card topi-putih" onclick="showTopi('putih')">
+      <span class="topi-hat">🤍</span>
+      <h4>Topi Putih</h4>
+      <div class="topi-role">Fakta & Maklumat</div>
+      <p style="font-size:0.76rem;color:var(--text-light)">Apakah fakta tentang kesan pencemaran?</p>
+    </div>
+    <div class="topi-card topi-hitam" onclick="showTopi('hitam')">
+      <span class="topi-hat">🖤</span>
+      <h4>Topi Hitam</h4>
+      <div class="topi-role">Risiko & Bahaya</div>
+      <p style="font-size:0.76rem;color:var(--text-light)">Apakah risiko dan bahaya yang berlaku?</p>
+    </div>
+    <div class="topi-card topi-kuning" onclick="showTopi('kuning')">
+      <span class="topi-hat">💛</span>
+      <h4>Topi Kuning</h4>
+      <div class="topi-role">Harapan & Peluang</div>
+      <p style="font-size:0.76rem;color:var(--text-light)">Apa yang boleh kita lakukan untuk harapan?</p>
+    </div>
+  </div>
+
+  <!-- Topi Content Panels -->
+  <div class="topi-content" id="topi-putih" style="max-width:700px">
+    <h3>🤍 Topi Putih — Fakta Pencemaran</h3>
+    <ul class="kesan-list">
+      <li style="background:var(--sky-light)"><span class="li-icon">🌡️</span><span><strong>Perubahan iklim & pemanasan global</strong> — Kemerosotan kualiti alam sekitar menyebabkan keseimbangan semula jadi terganggu</span></li>
+      <li style="background:#FFF3E0"><span class="li-icon">💧</span><span><strong>Krisis air</strong> — Sungai yang tercemar oleh sisa domestik dan industri menjadi tidak selamat digunakan</span></li>
+      <li style="background:var(--red-light)"><span class="li-icon">🐟</span><span><strong>Ancaman hidupan</strong> — Haiwan, tumbuhan dan ternakan mengalami penyakit dan keracunan akibat bahan pencemar</span></li>
+      <li style="background:var(--green-light)"><span class="li-icon">🌊</span><span><strong>Banjir & tanah runtuh</strong> — Kerosakan ekosistem meningkatkan risiko bencana alam</span></li>
+    </ul>
+  </div>
+
+  <div class="topi-content" id="topi-hitam" style="max-width:700px">
+    <h3>🖤 Topi Hitam — Risiko & Bahaya</h3>
+    <ul class="kesan-list">
+      <li style="background:#ECEFF1"><span class="li-icon">🏥</span><span><strong>Bahaya kesihatan manusia</strong> — Udara tercemar boleh menyebabkan penyakit pernafasan, kanser paru-paru dan alahan</span></li>
+      <li style="background:#FFEBEE"><span class="li-icon">☠️</span><span><strong>Keracunan makanan & air</strong> — Ikan dari sungai tercemar boleh mengandungi logam berat yang berbahaya jika dimakan</span></li>
+      <li style="background:#FFF8E1"><span class="li-icon">🌾</span><span><strong>Kemusnahan pertanian</strong> — Tanah yang tercemar tidak boleh ditanam lagi, mengancam bekalan makanan negara</span></li>
+      <li style="background:#E8EAF6"><span class="li-icon">💸</span><span><strong>Kerugian ekonomi</strong> — Kos pembersihan dan rawatan pencemaran sangat mahal dan membebankan negara</span></li>
+    </ul>
+  </div>
+
+  <div class="topi-content" id="topi-kuning" style="max-width:700px">
+    <h3>💛 Topi Kuning — Harapan & Peluang</h3>
+    <ul class="kesan-list">
+      <li style="background:#F9FBE7"><span class="li-icon">♻️</span><span><strong>Kesedaran meningkat</strong> — Ramai orang kini sedar tentang pentingnya menjaga alam sekitar dan mula mengambil tindakan</span></li>
+      <li style="background:var(--green-light)"><span class="li-icon">🌱</span><span><strong>Teknologi hijau</strong> — Manusia mencipta tenaga solar, kenderaan elektrik dan bahan kitar semula untuk mengurangkan pencemaran</span></li>
+      <li style="background:var(--sky-light)"><span class="li-icon">🤝</span><span><strong>Kerjasama komuniti</strong> — Program gotong-royong dan kempen alam sekitar menghimpunkan masyarakat untuk bertindak bersama</span></li>
+      <li style="background:var(--amber-light)"><span class="li-icon">📚</span><span><strong>Pendidikan alam sekitar</strong> — Pelajar seperti kamu sedang belajar — generasi baru boleh mengubah dunia!</span></li>
+    </ul>
+  </div>
+
+  <div class="nav-btns">
+    <button class="btn btn-secondary" onclick="goToSlide(1)">← Kembali</button>
+    <button class="btn btn-primary" onclick="goToSlide(3)">Seterusnya: Langkah Mengatasi ➜</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     SLIDE 4 — LANGKAH MENGATASI
+══════════════════════════ -->
+<div class="slide" id="slide-3">
+  <div class="section-label">✅ Topik 4</div>
+  <h1 class="slide-title">Langkah Mengatasi Pencemaran</h1>
+  <p class="slide-subtitle">Bagaimana kita boleh selamatkan alam sekitar kita?</p>
+
+  <div class="alat-badge">🧠 Peta Minda — Langkah Penyelesaian</div>
+
+  <!-- ── PETA MINDA: centre + 3 branch ovals only ── -->
+  <style>
+    .pm-wrap { width:100%; max-width:620px; margin:0 auto 6px; }
+
+    .pm-canvas {
+      position:relative; width:100%; padding-bottom:72%;
+      margin-bottom:8px;
+    }
+    .pm-svg {
+      position:absolute; inset:0; width:100%; height:100%;
+      pointer-events:none; overflow:visible;
+    }
+    /* shared node base */
+    .pm-node {
+      position:absolute; border-radius:50px;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      font-family:'Nunito',sans-serif; font-weight:800;
+      text-align:center; line-height:1.25; cursor:pointer;
+      transition:transform 0.22s, box-shadow 0.22s;
+      padding:8px 12px;
+    }
+    .pm-node:hover { transform:scale(1.07); box-shadow:0 6px 22px rgba(0,0,0,0.2); }
+    .pm-node.pm-active { transform:scale(1.1); box-shadow:0 8px 28px rgba(0,0,0,0.28); }
+
+    /* centre oval — wider, taller */
+    .pm-centre {
+      width:28%; top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      background:linear-gradient(135deg,#388E3C,#0288D1);
+      color:white; font-size:clamp(0.58rem,1.6vw,0.78rem);
+      box-shadow:0 5px 20px rgba(56,142,60,0.4);
+      z-index:3; cursor:default; border:none;
+      padding:10px 8px;
+    }
+    .pm-centre:hover { transform:translate(-50%,-50%); box-shadow:0 5px 20px rgba(56,142,60,0.4); }
+
+    /* branch ovals */
+    .pm-branch {
+      width:26%; font-size:clamp(0.54rem,1.5vw,0.74rem);
+      color:white; z-index:3;
+    }
+    .pm-green { background:#43A047; border:2.5px solid #2E7D32; }
+    .pm-blue  { background:#0288D1; border:2.5px solid #01579B; }
+    .pm-amber { background:#F57C00; border:2.5px solid #E65100; }
+    .pm-green.pm-active { outline:3px solid #A5D6A7; outline-offset:3px; }
+    .pm-blue.pm-active  { outline:3px solid #B3E5FC; outline-offset:3px; }
+    .pm-amber.pm-active { outline:3px solid #FFE0B2; outline-offset:3px; }
+
+    /* branch positions: top-centre, left-centre, bottom-centre */
+    .pm-pos-top  { top:4%;  left:50%; transform:translate(-50%,0); }
+    .pm-pos-left { top:50%; left:3%;  transform:translate(0,-50%); }
+    .pm-pos-bot  { top:88%; left:50%; transform:translate(-50%,-100%); }
+
+    /* detail panels */
+    .pm-detail {
+      display:none; width:100%; border-radius:16px;
+      padding:18px 20px; margin-bottom:14px;
+      animation:fadeUp 0.3s ease; box-shadow:var(--card-shadow);
+    }
+    .pm-detail.visible { display:block; }
+    .pm-detail h4 {
+      font-family:'Nunito',sans-serif; font-weight:800;
+      font-size:0.97rem; margin-bottom:12px;
+      display:flex; align-items:center; gap:7px;
+    }
+    .pm-detail li {
+      font-size:0.85rem; display:flex; gap:8px;
+      align-items:flex-start; line-height:1.6;
+      margin-bottom:8px; list-style:none;
+    }
+    .pm-detail li span:first-child { flex-shrink:0; font-size:1rem; margin-top:1px; }
+  </style>
+
+  <div class="pm-wrap">
+    <div class="pm-canvas">
+
+      <!-- SVG lines: centre → each branch oval -->
+      <svg class="pm-svg" viewBox="0 0 100 72" preserveAspectRatio="none">
+        <!-- to top  --> <line x1="50" y1="36" x2="50" y2="8"  stroke="#66BB6A" stroke-width="1.6"/>
+        <!-- to left --> <line x1="50" y1="36" x2="16" y2="36" stroke="#0288D1" stroke-width="1.6"/>
+        <!-- to bot  --> <line x1="50" y1="36" x2="50" y2="65" stroke="#F57C00" stroke-width="1.6"/>
+      </svg>
+
+      <!-- CENTRE -->
+      <div class="pm-node pm-centre pm-pos-c" style="top:50%;left:50%;transform:translate(-50%,-50%)">
+        🌍<br>Langkah Mengatasi<br>Pencemaran<br>Alam Sekitar
+      </div>
+
+      <!-- BRANCH 1: TOP — Meningkatkan Kesedaran Awam -->
+      <div class="pm-node pm-branch pm-green pm-pos-top" id="pmb1" onclick="togglePMGroup('pm1')">
+        📣 Meningkatkan<br>Kesedaran Awam
+      </div>
+
+      <!-- BRANCH 2: LEFT — Menyelaraskan Undang-Undang -->
+      <div class="pm-node pm-branch pm-blue pm-pos-left" id="pmb2" onclick="togglePMGroup('pm2')">
+        ⚖️ Menyelaraskan<br>Undang-Undang
+      </div>
+
+      <!-- BRANCH 3: BOTTOM — Memperkukuhkan Penguatkuasaan -->
+      <div class="pm-node pm-branch pm-amber pm-pos-bot" id="pmb3" onclick="togglePMGroup('pm3')">
+        🔒 Memperkukuhkan<br>Penguatkuasaan
+      </div>
+
+    </div><!-- end pm-canvas -->
+
+    <p style="font-size:0.78rem;color:var(--text-light);text-align:center;margin-bottom:14px">
+      👆 Klik pada setiap cabang untuk baca penerangan terperinci!
+    </p>
+
+    <!-- DETAIL PANELS -->
+    <div class="pm-detail" id="pm-detail-pm1" style="background:var(--green-light);border-left:5px solid var(--green-dark)">
+      <h4 style="color:var(--green-dark)">📣 Meningkatkan Kesedaran Awam</h4>
+      <ul style="padding:0">
+        <li><span>🌿</span><span>Adakan <strong>kempen kesedaran</strong> alam sekitar di sekolah dan komuniti secara berterusan</span></li>
+        <li><span>📚</span><span>Laksanakan <strong>program pendidikan</strong> yang berterusan untuk mendidik masyarakat tentang pentingnya alam sekitar</span></li>
+        <li><span>📋</span><span>Pesalah alam sekitar dikenakan <strong>kajian atau projek</strong> berkaitan alam sekitar sebagai hukuman yang mendidik</span></li>
+        <li><span>🤝</span><span><strong>NGO dan badan berkaitan</strong> memainkan peranan membangkitkan rasa tanggungjawab dalam kalangan masyarakat</span></li>
+      </ul>
+    </div>
+
+    <div class="pm-detail" id="pm-detail-pm2" style="background:var(--sky-light);border-left:5px solid var(--sky-dark)">
+      <h4 style="color:var(--sky-dark)">⚖️ Menyelaraskan Undang-Undang</h4>
+      <ul style="padding:0">
+        <li><span>🏛️</span><span>Kerjasama <strong>kerajaan persekutuan dan kerajaan negeri</strong> penting untuk memastikan akta alam sekitar dilaksanakan dengan berkesan</span></li>
+        <li><span>📜</span><span><strong>Akta Kualiti Alam Sekeliling 1974</strong> perlu dikemas kini mengikut perkembangan semasa</span></li>
+        <li><span>📝</span><span>Wujudkan <strong>peraturan baru</strong> yang lebih ketat untuk industri yang mencemarkan alam sekitar</span></li>
+      </ul>
+    </div>
+
+    <div class="pm-detail" id="pm-detail-pm3" style="background:var(--amber-light);border-left:5px solid var(--amber-dark)">
+      <h4 style="color:var(--amber-dark)">🔒 Memperkukuhkan Penguatkuasaan</h4>
+      <ul style="padding:0">
+        <li><span>⚠️</span><span>Kenakan <strong>hukuman yang lebih tegas</strong> terhadap pihak yang melakukan pencemaran</span></li>
+        <li><span>🏭</span><span>Tindakan yang tegas mendidik <strong>masyarakat dan industri</strong> supaya lebih mematuhi peraturan alam sekitar</span></li>
+        <li><span>🌍</span><span>Dengan <strong>kerjasama semua pihak</strong>, usaha memelihara alam sekitar dapat dilaksanakan demi kesejahteraan generasi akan datang</span></li>
+      </ul>
+    </div>
+
+  </div><!-- end pm-wrap -->
+
+  <!-- Soalan Bercapah -->
+  <div class="alat-badge">💡 Soalan Bercapah — Cari Idea Baru!</div>
+  <div class="bercapah-box" style="max-width:700px">
+    <h3>💡 Apa yang BOLEH kamu lakukan? Klik untuk dapatkan idea!</h3>
+    <div class="bercapah-questions">
+      <div class="bq-item" onclick="toggleBQ(this)">
+        <div class="bq-num">1</div>
+        <div>
+          <div class="bq-text">Apakah cara-cara kreatif yang boleh kamu lakukan di rumah untuk mengurangkan pencemaran?</div>
+          <div class="bq-ideas">♻️ Kitar semula kertas, botol dan tin &nbsp;|&nbsp; 💡 Tutup lampu bila keluar bilik &nbsp;|&nbsp; 🚿 Jimat air semasa mandi &nbsp;|&nbsp; 🛍️ Guna beg kain, bukan plastik &nbsp;|&nbsp; 🌱 Tanam pokok di rumah</div>
+        </div>
+      </div>
+      <div class="bq-item" onclick="toggleBQ(this)">
+        <div class="bq-num">2</div>
+        <div>
+          <div class="bq-text">Bagaimana kamu boleh mengajak rakan-rakan untuk sama-sama menjaga alam sekitar?</div>
+          <div class="bq-ideas">📢 Adakan kempen kelas &nbsp;|&nbsp; 🎨 Buat poster alam sekitar &nbsp;|&nbsp; 🏫 Cadangkan projek hijau kepada guru &nbsp;|&nbsp; 📱 Kongsikan maklumat di media sosial &nbsp;|&nbsp; 🌳 Sertai program penanaman pokok</div>
+        </div>
+      </div>
+      <div class="bq-item" onclick="toggleBQ(this)">
+        <div class="bq-num">3</div>
+        <div>
+          <div class="bq-text">Jika kamu menjadi pemimpin, apakah undang-undang baru yang akan kamu buat untuk melindungi alam sekitar?</div>
+          <div class="bq-ideas">🚫 Haramkan plastik sekali guna &nbsp;|&nbsp; 💰 Denda berat bagi pembuang sampah &nbsp;|&nbsp; 🏭 Wajibkan kilang guna teknologi hijau &nbsp;|&nbsp; 🌊 Lindungi semua sungai dari pembuangan sisa &nbsp;|&nbsp; 🎓 Jadikan penjagaan alam sekitar mata pelajaran wajib</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="btn btn-secondary" onclick="goToSlide(2)">← Kembali</button>
+    <button class="btn btn-primary" onclick="goToSlide(4)">Seterusnya: Refleksi ➜</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     SLIDE 5 — REFLEKSI (Lingkaran Soalan)
+══════════════════════════ -->
+<div class="slide" id="slide-4">
+  <div class="section-label">🌟 Refleksi</div>
+  <h1 class="slide-title">Refleksi Diri — Apa yang Saya Pelajari?</h1>
+  <p class="slide-subtitle">Klik pada setiap soalan untuk membuat refleksi pembelajaran kamu!</p>
+
+  <div class="alat-badge">🔄 Lingkaran Soalan — 4 Peringkat</div>
+
+  <div class="lingkaran-grid" style="max-width:700px">
+    <div class="lingkaran-card" onclick="toggleLing(this)">
+      <span class="ling-icon">📖</span>
+      <div class="ling-level">Peringkat 1 — Apa?</div>
+      <div class="ling-q">Apakah yang kamu pelajari hari ini tentang pencemaran alam sekitar?</div>
+      <div class="ling-a">Saya belajar bahawa pencemaran alam sekitar berlaku apabila bahan berbahaya masuk ke alam sekitar. Terdapat 3 jenis pencemaran: udara, air dan tanah. Ia disebabkan oleh aktiviti manusia seperti kilang, kenderaan dan pembuangan sampah.</div>
+    </div>
+    <div class="lingkaran-card" onclick="toggleLing(this)">
+      <span class="ling-icon">🔍</span>
+      <div class="ling-level">Peringkat 2 — Mengapa?</div>
+      <div class="ling-q">Mengapa kita perlu ambil peduli tentang masalah pencemaran alam sekitar?</div>
+      <div class="ling-a">Pencemaran memberi kesan buruk kepada kesihatan kita, menyebabkan haiwan mati, mencemarkan air minum dan mengakibatkan bencana alam. Kita harus ambil peduli kerana ini menjejaskan kehidupan semua makhluk hidup di bumi.</div>
+    </div>
+    <div class="lingkaran-card" onclick="toggleLing(this)">
+      <span class="ling-icon">💪</span>
+      <div class="ling-level">Peringkat 3 — Bagaimana?</div>
+      <div class="ling-q">Bagaimana cara kamu boleh menjadi agen perubahan untuk alam sekitar yang lebih baik?</div>
+      <div class="ling-a">Saya boleh mulakan dari rumah — kitar semula, jimat elektrik dan air, tidak membuang sampah merata-rata. Saya juga boleh ajak keluarga dan rakan-rakan untuk bersama menjaga kebersihan alam sekitar dan sertai kempen hijau.</div>
+    </div>
+    <div class="lingkaran-card" onclick="toggleLing(this)">
+      <span class="ling-icon">🌈</span>
+      <div class="ling-level">Peringkat 4 — Kalau...?</div>
+      <div class="ling-q">Kalau setiap orang di Malaysia mengitar semula sisa mereka, apakah yang akan berlaku kepada alam sekitar kita?</div>
+      <div class="ling-a">Jika semua rakyat Malaysia mengitar semula, tempat pelupusan sampah akan berkurang, sumber semula jadi akan dipulihara, air dan tanah akan menjadi lebih bersih, dan generasi akan datang dapat menikmati alam sekitar yang lebih sihat!</div>
+    </div>
+  </div>
+
+  <!-- Tekad Peribadi -->
+  <div class="tekad-banner" style="max-width:700px">
+    <h2>🌱 Tekad Alam Sekitar Saya!</h2>
+    <p>Saya berjanji untuk menjadi penjaga alam sekitar yang bertanggungjawab. Pilih tekad kamu hari ini:</p>
+    <div class="tekad-pledge">
+      <button class="pledge-btn" onclick="makePledge(this)">♻️ Kitar Semula Setiap Hari</button>
+      <button class="pledge-btn" onclick="makePledge(this)">💧 Jimat Air</button>
+      <button class="pledge-btn" onclick="makePledge(this)">🚯 Tidak Buang Sampah</button>
+      <button class="pledge-btn" onclick="makePledge(this)">🌳 Tanam Pokok</button>
+      <button class="pledge-btn" onclick="makePledge(this)">📢 Ajak Rakan Peduli</button>
+    </div>
+    <div class="stars-wrap" id="starsWrap" style="display:none;margin-top:12px"></div>
+  </div>
+
+  <!-- Ringkasan -->
+  <div style="width:100%;max-width:700px;background:white;border-radius:18px;padding:22px 24px;box-shadow:var(--card-shadow);margin-bottom:20px">
+    <h3 style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;margin-bottom:16px;color:var(--navy)">📋 Rumusan Pembelajaran</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:var(--sky-light);border-radius:12px;padding:14px;border-left:4px solid var(--sky-dark)">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:0.85rem;color:var(--sky-dark);margin-bottom:6px">🌍 Pengenalan</div>
+        <p style="font-size:0.8rem;color:var(--text-light);line-height:1.5">Alam sekitar terdiri dari komponen biotik & abiotik yang membentuk ekosistem seimbang</p>
+      </div>
+      <div style="background:var(--purple-light);border-radius:12px;padding:14px;border-left:4px solid var(--purple)">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:0.85rem;color:var(--purple);margin-bottom:6px">💨 Jenis</div>
+        <p style="font-size:0.8rem;color:var(--text-light);line-height:1.5">3 jenis pencemaran: udara, air dan tanah — semuanya saling berkait</p>
+      </div>
+      <div style="background:var(--red-light);border-radius:12px;padding:14px;border-left:4px solid var(--red)">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:0.85rem;color:var(--red);margin-bottom:6px">⚠️ Kesan</div>
+        <p style="font-size:0.8rem;color:var(--text-light);line-height:1.5">Bencana alam, krisis air, ancaman hidupan dan kesan kepada kesihatan manusia</p>
+      </div>
+      <div style="background:var(--green-light);border-radius:12px;padding:14px;border-left:4px solid var(--green-dark)">
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:0.85rem;color:var(--green-dark);margin-bottom:6px">✅ Langkah</div>
+        <p style="font-size:0.8rem;color:var(--text-light);line-height:1.5">Kesedaran, undang-undang & penguatkuasaan — kerjasama semua pihak diperlukan</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="btn btn-secondary" onclick="goToSlide(3)">← Kembali</button>
+    <button class="btn btn-amber" onclick="goToSlide(0)">🔄 Mula Semula</button>
+  </div>
+</div>
+
+</div><!-- end slides-wrap -->
+
+<script>
+// ── STATE ──
+let currentSlide = 0;
+const totalSlides = 5;
+
+// ── NAVIGATION ──
+function goToSlide(n) {
+  document.getElementById('slide-' + currentSlide).classList.remove('active');
+  currentSlide = n;
+  document.getElementById('slide-' + currentSlide).classList.add('active');
+  // update dots
+  const dots = document.querySelectorAll('.nav-dot');
+  dots.forEach((d,i) => d.classList.toggle('active', i === n));
+  // update counter
+  document.getElementById('navCounter').textContent = (n+1) + ' / ' + totalSlides;
+  // update progress
+  document.getElementById('progressBar').style.width = ((n+1)/totalSlides * 100) + '%';
+  // scroll to top
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── SLIDE 1: Scene Toggle ──
+let polluted = false;
+function toggleScene() {
+  polluted = !polluted;
+  const wrap = document.getElementById('sceneBg');
+  const sw   = document.getElementById('sceneToggle');
+  wrap.classList.toggle('polluted', polluted);
+  sw.classList.toggle('on', polluted);
+}
+
+// ── SLIDE 1: Komponen Cards ──
+function toggleKomponen(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('expanded');
+}
+
+// ── SLIDE 1: Soalan Sokratik ──
+function toggleSQ(el) {
+  el.classList.toggle('revealed');
+}
+
+// ── SLIDE 2: Jenis Detail (legacy redirect) ──
+let currentJenis = null;
+function showJenis(type) {
+  // redirect to new peta buih handler — no-op if no sat element available
+  showJenisBuih(null, type);
+}
+
+// ── SLIDE 3: Topi Pemikiran ──
+let currentTopi = null;
+function showTopi(color) {
+  ['putih','hitam','kuning'].forEach(c => {
+    document.getElementById('topi-' + c).classList.remove('visible');
+    document.querySelectorAll('.topi-' + c).forEach(el => el.classList.remove('active-topi'));
+  });
+  if (currentTopi === color) {
+    currentTopi = null;
+    return;
+  }
+  currentTopi = color;
+  document.getElementById('topi-' + color).classList.add('visible');
+  document.querySelectorAll('.topi-' + color).forEach(el => el.classList.add('active-topi'));
+  setTimeout(() => {
+    document.getElementById('topi-' + color).scrollIntoView({behavior:'smooth', block:'nearest'});
+  }, 50);
+}
+
+// ── SLIDE 2: Peta Buih — bubble click ──
+let currentBuih = null;
+function showJenisBuih(satEl, type) {
+  // reset all satellites
+  document.querySelectorAll('.pb-sat').forEach(s => s.classList.remove('sat-active'));
+  // hide all detail panels
+  ['udara','air','tanah'].forEach(t => {
+    document.getElementById('pb-detail-' + t).classList.remove('visible');
+  });
+  // if same clicked twice → close
+  if (currentBuih === type) { currentBuih = null; return; }
+  currentBuih = type;
+  // activate all satellites of this type
+  document.querySelectorAll('.pb-sat[data-jenis="' + type + '"]').forEach(s => s.classList.add('sat-active'));
+  const panel = document.getElementById('pb-detail-' + type);
+  panel.classList.add('visible');
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+}
+
+// ── SLIDE 4: Peta Minda — branch click ──
+let currentPM = null;
+function togglePMGroup(group) {
+  const panel = document.getElementById('pm-detail-' + group);
+  const branchMap = { pm1: 'pmb1', pm2: 'pmb2', pm3: 'pmb3' };
+  // close others
+  ['pm1','pm2','pm3'].forEach(g => {
+    if (g !== group) {
+      const p = document.getElementById('pm-detail-' + g);
+      if (p) p.classList.remove('visible');
+      const b = document.getElementById(branchMap[g]);
+      if (b) b.classList.remove('pm-active');
+    }
+  });
+  const branchEl = document.getElementById(branchMap[group]);
+  if (currentPM === group) {
+    panel.classList.remove('visible');
+    if (branchEl) branchEl.classList.remove('pm-active');
+    currentPM = null;
+    return;
+  }
+  currentPM = group;
+  panel.classList.add('visible');
+  if (branchEl) branchEl.classList.add('pm-active');
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+}
+
+// kept for legacy
+function toggleMMGroup(group) { togglePMGroup(group); }
+
+// ── SLIDE 4: Soalan Bercapah ──
+function toggleBQ(el) {
+  el.classList.toggle('revealed');
+}
+
+// ── SLIDE 5: Lingkaran Soalan ──
+function toggleLing(el) {
+  el.classList.toggle('answered');
+}
+
+// ── SLIDE 5: Tekad / Pledge ──
+let pledgeCount = 0;
+function makePledge(btn) {
+  if (!btn.classList.contains('pledged')) {
+    btn.classList.add('pledged');
+    pledgeCount++;
+    const sw = document.getElementById('starsWrap');
+    sw.style.display = 'block';
+    let stars = '';
+    for (let i = 0; i < pledgeCount; i++) {
+      stars += '<span class="star-icon" style="animation-delay:' + (i*0.1) + 's">⭐</span>';
+    }
+    sw.innerHTML = stars + '<div style="margin-top:6px;font-family:Nunito,sans-serif;font-weight:700;font-size:0.85rem;opacity:0.9">Tahniah! Kamu membuat ' + pledgeCount + ' tekad alam sekitar!</div>';
+  }
+}
+
+// keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' && currentSlide < totalSlides-1) goToSlide(currentSlide+1);
+  if (e.key === 'ArrowLeft' && currentSlide > 0) goToSlide(currentSlide-1);
+});
+</script>
+</body>
+</html>
